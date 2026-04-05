@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Settlement</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f4f0;min-height:100vh;color:#1a1a2e}
+.hidden{display:none!important}
+/* NAME SCREEN */
+.name-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem}
+.name-hero{background:#26215C;border-radius:16px;padding:2.5rem 2rem;margin-bottom:2rem;text-align:center}
+.name-title{font-size:36px;font-weight:700;color:#EEEDFE;letter-spacing:-1px;margin-bottom:8px}
+.name-sub{font-size:14px;color:#AFA9EC;line-height:1.6}
+.name-card{background:#fff;border-radius:16px;border:1px solid #e5e5e5;padding:1.5rem;width:100%;max-width:380px}
+.name-card-inner{max-width:380px;width:100%}
+.form-label{font-size:12px;color:#666;margin-bottom:6px;display:block;font-weight:500}
+.name-select,.name-input{width:100%;font-size:15px;padding:11px 12px;border:1px solid #ddd;border-radius:10px;background:#fff;color:#1a1a2e;margin-bottom:10px}
+.name-enter{width:100%;font-size:15px;font-weight:600;background:#534AB7;color:#EEEDFE;border:none;border-radius:10px;padding:12px;cursor:pointer}
+.name-enter:hover{background:#3C3489}
+.or-divider{text-align:center;color:#aaa;font-size:13px;margin:8px 0}
+/* APP SHELL */
+.app-header{background:#26215C;padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between}
+.app-logo{font-size:20px;font-weight:700;color:#EEEDFE;letter-spacing:-0.5px}
+.app-tagline{font-size:11px;color:#AFA9EC;margin-top:2px}
+.user-pill{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.1);border-radius:20px;padding:6px 12px;border:1px solid rgba(255,255,255,0.2);cursor:pointer}
+.avatar{width:26px;height:26px;border-radius:50%;background:#7F77DD;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#EEEDFE}
+.uname{font-size:13px;color:#EEEDFE;font-weight:500}
+.admin-badge{font-size:10px;background:#EF9F27;color:#412402;padding:2px 8px;border-radius:20px;font-weight:600}
+/* TABS */
+.tabs-bar{background:#fff;border-bottom:1px solid #e5e5e5;padding:0 1.25rem;display:flex;gap:4px}
+.tab-btn{font-size:13px;padding:12px 16px;border:none;background:transparent;color:#888;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;font-weight:500}
+.tab-btn.active{color:#534AB7;border-bottom-color:#534AB7}
+.tab-count{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;font-size:10px;background:#f0f0f0;color:#888;margin-left:5px}
+.tab-btn.active .tab-count{background:#534AB7;color:#fff}
+/* CONTENT */
+.content{padding:1.25rem;max-width:700px;margin:0 auto}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.section-lbl{font-size:13px;color:#888}
+.new-btn{font-size:13px;font-weight:600;background:#534AB7;color:#fff;border:none;border-radius:20px;padding:8px 18px;cursor:pointer}
+.new-btn:hover{background:#3C3489}
+/* WAGER CARDS */
+.wager-card{background:#fff;border-radius:14px;border:1px solid #e5e5e5;border-left:4px solid #7F77DD;padding:1.25rem;margin-bottom:1rem}
+.wager-card.closed-card{border-left-color:#639922}
+.wager-card.paidout-card{border-left-color:#B4B2A9;opacity:0.8}
+.wager-card.void-card{border-left-color:#ddd;opacity:0.6}
+.wager-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px}
+.wager-title{font-size:15px;font-weight:600;color:#1a1a2e;line-height:1.4;flex:1}
+.amt-pill{font-size:12px;font-weight:600;background:#EAF3DE;color:#27500A;border:1px solid #C0DD97;border-radius:20px;padding:4px 12px;white-space:nowrap;flex-shrink:0}
+.void-pill{font-size:12px;font-weight:600;background:#F1EFE8;color:#5F5E5A;border:1px solid #D3D1C7;border-radius:20px;padding:4px 12px;white-space:nowrap;flex-shrink:0}
+.winner-pill{font-size:12px;font-weight:600;background:#EAF3DE;color:#27500A;border:1px solid #C0DD97;border-radius:20px;padding:4px 12px;white-space:nowrap;flex-shrink:0}
+.tie-pill{font-size:12px;font-weight:600;background:#FAEEDA;color:#633806;border:1px solid #FAC775;border-radius:20px;padding:4px 12px;white-space:nowrap;flex-shrink:0}
+.wager-desc{font-size:13px;color:#666;margin-bottom:14px;line-height:1.5}
+.wager-meta{font-size:12px;color:#aaa;margin-bottom:12px}
+/* BLIND BOX */
+.blind-box{background:#FAEEDA;border:1px solid #FAC775;border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.blind-txt{font-size:12px;color:#633806;font-weight:500}
+.blind-stats{display:flex;gap:16px}
+.blind-stat{text-align:center}
+.blind-stat-num{font-size:16px;font-weight:700;color:#412402}
+.blind-stat-lbl{font-size:10px;color:#854F0B}
+/* YOUR PICK */
+.your-pick-box{background:#EEEDFE;border:1px solid #AFA9EC;border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.your-pick-lbl{font-size:11px;color:#534AB7;font-weight:600;margin-bottom:2px}
+.your-pick-val{font-size:14px;font-weight:600;color:#26215C}
+.change-link{font-size:12px;color:#7F77DD;cursor:pointer;text-decoration:underline}
+/* OUTCOMES */
+.outcomes-label{font-size:12px;color:#666;margin-bottom:8px;font-weight:500}
+.outcomes-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.outcome-chip{font-size:13px;padding:7px 16px;border-radius:20px;border:1px solid #ddd;color:#555;cursor:pointer;background:#fff;transition:all 0.15s}
+.outcome-chip:hover{border-color:#7F77DD;color:#534AB7;background:#EEEDFE}
+.outcome-chip.selected{background:#534AB7;border-color:#534AB7;color:#fff}
+/* WAGER FOOTER */
+.wager-footer{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid #f0f0f0;gap:8px;flex-wrap:wrap}
+.wager-footer-left{font-size:12px;color:#aaa}
+.join-btn{font-size:13px;font-weight:600;background:#26215C;color:#fff;border:none;border-radius:20px;padding:7px 20px;cursor:pointer}
+.join-btn:hover{background:#534AB7}
+.joined-btn{font-size:13px;background:transparent;color:#aaa;border:1px solid #e5e5e5;border-radius:20px;padding:7px 20px;cursor:default}
+.void-btn{font-size:12px;color:#aaa;background:transparent;border:1px solid #e5e5e5;border-radius:20px;padding:6px 14px;cursor:pointer}
+.void-btn:hover{border-color:#E24B4A;color:#A32D2D}
+.close-wager-btn{font-size:13px;font-weight:600;background:#639922;color:#fff;border:none;border-radius:20px;padding:7px 18px;cursor:pointer}
+.close-wager-btn:hover{background:#3B6D11}
+/* PAYOUT BOX */
+.payout-box{background:#f8f8f6;border-radius:10px;padding:12px 16px;margin-bottom:12px}
+.payout-lbl{font-size:11px;color:#aaa;letter-spacing:0.5px;margin-bottom:8px;font-weight:600}
+.payout-row{display:flex;justify-content:space-between;font-size:13px;color:#333;padding:3px 0}
+.payout-win{color:#27500A;font-weight:600}
+.payout-you{color:#534AB7;font-weight:600}
+.dist-section{margin-top:10px;padding-top:10px;border-top:1px solid #eee}
+.dist-title{font-size:11px;color:#aaa;margin-bottom:8px;font-weight:600}
+.dist-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.dist-label{font-size:12px;color:#555;min-width:80px}
+.dist-bar-wrap{flex:1;height:7px;background:#eee;border-radius:4px;overflow:hidden}
+.dist-bar{height:100%;border-radius:4px;background:#7F77DD}
+.dist-bar.winning{background:#639922}
+.dist-count{font-size:12px;color:#aaa;min-width:40px;text-align:right}
+.dist-changed{font-size:11px;color:#EF9F27;margin-left:4px}
+.paidout-btn{font-size:13px;font-weight:600;background:#EAF3DE;color:#27500A;border:1px solid #C0DD97;border-radius:20px;padding:7px 16px;cursor:pointer}
+.paidout-btn:hover{background:#C0DD97}
+.stamp{font-size:12px;color:#aaa}
+/* PAIDOUT SUMMARY */
+.paidout-summary{background:#f8f8f6;border-radius:10px;padding:10px 14px;display:flex;gap:20px;flex-wrap:wrap}
+.ps-stat-val{font-size:14px;font-weight:600;color:#333}
+.ps-stat-lbl{font-size:11px;color:#aaa}
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:3rem 1rem;color:#aaa}
+.empty-icon{font-size:36px;margin-bottom:12px}
+.empty-title{font-size:16px;font-weight:600;color:#555;margin-bottom:6px}
+.empty-sub{font-size:13px}
+/* MODAL */
+.modal-backdrop{position:fixed;inset:0;background:rgba(20,16,50,0.6);display:flex;align-items:center;justify-content:center;z-index:100;padding:1rem}
+.modal{background:#fff;border-radius:16px;padding:1.5rem;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+.modal-title{font-size:17px;font-weight:700;color:#1a1a2e;margin-bottom:1.25rem;padding-bottom:12px;border-bottom:1px solid #f0f0f0}
+.form-row{margin-bottom:16px}
+.form-input,.form-textarea,.form-select{width:100%;font-size:14px;padding:10px 12px;border:1px solid #ddd;border-radius:10px;background:#fff;color:#1a1a2e;font-family:inherit}
+.form-textarea{resize:vertical;min-height:70px}
+.pill-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}
+.pick-pill{font-size:13px;padding:6px 16px;border-radius:20px;border:1px solid #ddd;color:#555;cursor:pointer;background:#fff}
+.pick-pill:hover{border-color:#7F77DD;color:#534AB7}
+.pick-pill.on{background:#534AB7;border-color:#534AB7;color:#fff}
+.add-outcome-input{font-size:13px;padding:6px 12px;border:1px dashed #ddd;border-radius:20px;width:130px;color:#555;font-family:inherit}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:1.25rem;padding-top:12px;border-top:1px solid #f0f0f0}
+.cancel-btn{font-size:13px;color:#666;background:transparent;border:1px solid #ddd;border-radius:20px;padding:8px 18px;cursor:pointer}
+.submit-btn{font-size:13px;font-weight:600;background:#534AB7;color:#fff;border:none;border-radius:20px;padding:8px 20px;cursor:pointer}
+.submit-btn:hover{background:#3C3489}
+.submit-btn:disabled{background:#ccc;cursor:not-allowed}
+.error-msg{font-size:12px;color:#A32D2D;margin-top:6px}
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#26215C;color:#EEEDFE;font-size:13px;font-weight:500;padding:10px 20px;border-radius:20px;z-index:200;opacity:0;transition:opacity 0.3s}
+.toast.show{opacity:1}
+/* LOADING */
+.loading{text-align:center;padding:3rem;color:#888;font-size:14px}
+@media(max-width:500px){
+  .wager-header{flex-direction:column;gap:8px}
+  .blind-box{flex-direction:column;gap:10px;align-items:flex-start}
+  .wager-footer{flex-direction:column;align-items:flex-start}
+  .tabs-bar{overflow-x:auto}
+  .tab-btn{white-space:nowrap}
+}
+</style>
+</head>
+<body>
+
+<!-- NAME SCREEN -->
+<div id="nameScreen" class="name-screen">
+  <div class="name-card-inner">
+    <div class="name-hero">
+      <div class="name-title">The Settlement</div>
+      <div class="name-sub">Your internal stress relief betting pool.<br>Place your bets. Settle the score.</div>
+    </div>
+    <div class="name-card">
+      <label class="form-label">Who are you?</label>
+      <select id="nameSelect" class="name-select">
+        <option value="">— pick your name —</option>
+      </select>
+      <button class="name-enter" onclick="enterWithSelected()">Enter The Settlement</button>
+      <div class="or-divider">or add yourself</div>
+      <input id="newNameInput" class="name-input" type="text" placeholder="Type your name..." maxlength="40" />
+      <button class="name-enter" onclick="enterWithNew()">Join as new member</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appShell" class="hidden">
+  <div class="app-header">
+    <div>
+      <div class="app-logo">The Settlement</div>
+      <div class="app-tagline">Your internal stress relief betting pool</div>
+    </div>
+    <div class="user-pill" onclick="switchUser()">
+      <div class="avatar" id="userAvatar"></div>
+      <div class="uname" id="userName"></div>
+      <div class="admin-badge hidden" id="adminBadge">admin</div>
+    </div>
+  </div>
+  <div class="tabs-bar">
+    <button class="tab-btn active" onclick="switchTab('open')" id="tab-open">Open <span class="tab-count" id="count-open">0</span></button>
+    <button class="tab-btn" onclick="switchTab('closed')" id="tab-closed">Closed <span class="tab-count" id="count-closed">0</span></button>
+    <button class="tab-btn" onclick="switchTab('paidout')" id="tab-paidout">Paid out <span class="tab-count" id="count-paidout">0</span></button>
+  </div>
+  <div class="content">
+    <div id="tab-content-open"></div>
+    <div id="tab-content-closed" class="hidden"></div>
+    <div id="tab-content-paidout" class="hidden"></div>
+  </div>
+</div>
+
+<!-- MODAL: CREATE WAGER -->
+<div id="createModal" class="modal-backdrop hidden">
+  <div class="modal">
+    <div class="modal-title">New wager</div>
+    <div class="form-row">
+      <label class="form-label">Wager title *</label>
+      <input id="wagerTitle" class="form-input" type="text" placeholder="e.g. Who loses their temper first?" maxlength="120" />
+    </div>
+    <div class="form-row">
+      <label class="form-label">Description / rules (optional)</label>
+      <textarea id="wagerDesc" class="form-textarea" placeholder="Any clarifications, rules, or context..."></textarea>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Bet amount for everyone ($)</label>
+      <input id="wagerAmount" class="form-input" type="number" min="1" max="100" placeholder="5" style="width:120px" />
+    </div>
+    <div class="form-row">
+      <label class="form-label">Possible outcomes (2–10) *</label>
+      <div class="pill-row" id="outcomesPillRow"></div>
+      <input id="addOutcomeInput" class="add-outcome-input" type="text" placeholder="+ type & press Enter" maxlength="40" />
+      <div class="error-msg hidden" id="outcomesError">Add at least 2 outcomes</div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Your pick *</label>
+      <div class="pill-row" id="yourPickRow"></div>
+      <div class="error-msg hidden" id="pickError">Please select your outcome</div>
+    </div>
+    <div class="modal-btns">
+      <button class="cancel-btn" onclick="closeModal('createModal')">Cancel</button>
+      <button class="submit-btn" onclick="submitCreateWager()">Post wager</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: CLOSE WAGER -->
+<div id="closeWagerModal" class="modal-backdrop hidden">
+  <div class="modal">
+    <div class="modal-title">Close wager</div>
+    <p style="font-size:14px;color:#555;margin-bottom:1.25rem" id="closeWagerTitle"></p>
+    <div class="form-row">
+      <label class="form-label">Select the winning outcome *</label>
+      <div class="pill-row" id="closeOutcomeRow"></div>
+      <div style="margin-top:10px">
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#555;cursor:pointer">
+          <input type="checkbox" id="tieCheckbox" onchange="handleTieCheck()" />
+          This is a tie — refund everyone
+        </label>
+      </div>
+    </div>
+    <div class="modal-btns">
+      <button class="cancel-btn" onclick="closeModal('closeWagerModal')">Cancel</button>
+      <button class="submit-btn" onclick="submitCloseWager()">Confirm & close</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<script>
+const ADMINS = ["Phil","Jess","Jeff"];
+let currentUser = null;
+let appData = { users: [], wagers: [] };
+let activeTab = "open";
+let selectedWagerToClose = null;
+let selectedCloseOutcome = null;
+let creatorOutcomes = [];
+let creatorPick = null;
+
+// INIT
+async function init() {
+  const saved = localStorage.getItem("settlement_user");
+  appData = await fetchData();
+  renderNameScreen();
+  if (saved && appData.users.includes(saved)) {
+    loginAs(saved);
+  }
+}
+
+async function fetchData() {
+  try {
+    const res = await fetch("/api/save");
+    return await res.json();
+  } catch(e) {
+    return { users: [], wagers: [] };
+  }
+}
+
+async function postAction(action, payload) {
+  const res = await fetch("/api/save", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ action, payload })
+  });
+  const json = await res.json();
+  if (json.data) appData = json.data;
+  return json;
+}
+
+// NAME SCREEN
+function renderNameScreen() {
+  const sel = document.getElementById("nameSelect");
+  sel.innerHTML = '<option value="">— pick your name —</option>';
+  appData.users.forEach(u => {
+    const opt = document.createElement("option");
+    opt.value = u; opt.textContent = u;
+    sel.appendChild(opt);
+  });
+}
+
+async function enterWithSelected() {
+  const val = document.getElementById("nameSelect").value;
+  if (!val) return showToast("Please pick your name");
+  loginAs(val);
+}
+
+async function enterWithNew() {
+  const val = document.getElementById("newNameInput").value.trim();
+  if (!val) return showToast("Please type your name");
+  await postAction("addUser", { name: val });
+  loginAs(val);
+}
+
+function loginAs(name) {
+  currentUser = name;
+  localStorage.setItem("settlement_user", name);
+  document.getElementById("nameScreen").classList.add("hidden");
+  document.getElementById("appShell").classList.remove("hidden");
+  const av = document.getElementById("userAvatar");
+  av.textContent = name.slice(0,2).toUpperCase();
+  document.getElementById("userName").textContent = name;
+  if (ADMINS.includes(name)) document.getElementById("adminBadge").classList.remove("hidden");
+  else document.getElementById("adminBadge").classList.add("hidden");
+  renderAll();
+}
+
+function switchUser() {
+  currentUser = null;
+  localStorage.removeItem("settlement_user");
+  document.getElementById("appShell").classList.add("hidden");
+  document.getElementById("nameScreen").classList.remove("hidden");
+  renderNameScreen();
+}
+
+// TABS
+function switchTab(tab) {
+  activeTab = tab;
+  ["open","closed","paidout"].forEach(t => {
+    document.getElementById("tab-"+t).classList.toggle("active", t===tab);
+    document.getElementById("tab-content-"+t).classList.toggle("hidden", t!==tab);
+  });
+}
+
+// RENDER ALL
+function renderAll() {
+  const open = appData.wagers.filter(w => w.status === "open");
+  const closed = appData.wagers.filter(w => w.status === "closed");
+  const paidout = appData.wagers.filter(w => w.status === "paidout");
+  const voided = appData.wagers.filter(w => w.status === "void");
+  document.getElementById("count-open").textContent = open.length;
+  document.getElementById("count-closed").textContent = closed.length;
+  document.getElementById("count-paidout").textContent = paidout.length + voided.length;
+  renderOpenTab(open);
+  renderClosedTab(closed);
+  renderPaidoutTab(paidout, voided);
+}
+
+// OPEN TAB
+function renderOpenTab(wagers) {
+  const el = document.getElementById("tab-content-open");
+  const isAdmin = ADMINS.includes(currentUser);
+  let html = `<div class="topbar"><div class="section-lbl">${wagers.length} active wager${wagers.length!==1?"s":""} — results hidden until closed</div><button class="new-btn" onclick="openCreateModal()">+ New wager</button></div>`;
+  if (!wagers.length) {
+    html += `<div class="empty-state"><div class="empty-icon">🎲</div><div class="empty-title">No open wagers yet</div><div class="empty-sub">Be the first to create one</div></div>`;
+  } else {
+    wagers.forEach(w => { html += renderOpenCard(w, isAdmin); });
+  }
+  el.innerHTML = html;
+}
+
+function renderOpenCard(w, isAdmin) {
+  const myBet = w.bets.find(b => b.name === currentUser);
+  const totalBets = w.bets.length;
+  const totalPot = (totalBets * parseFloat(w.amount)).toFixed(2);
+  const canClose = isAdmin || w.createdBy === currentUser;
+  const canVoid = isAdmin || w.createdBy === currentUser;
+  const createdDate = new Date(w.createdAt).toLocaleDateString("en-US",{month:"short",day:"numeric"});
+
+  let pickSection = "";
+  if (myBet) {
+    pickSection = `<div class="your-pick-box"><div><div class="your-pick-lbl">Your pick</div><div class="your-pick-val">${myBet.outcome}</div></div><span class="change-link" onclick="changePick('${w.id}')">Change pick</span></div>`;
+  } else {
+    pickSection = `<div class="outcomes-label">Choose your outcome to join</div><div class="outcomes-grid" id="chips-${w.id}">${w.outcomes.map(o=>`<div class="outcome-chip" onclick="selectChip('${w.id}','${o.replace(/'/g,"\\'")}',this)">${o}</div>`).join("")}</div>`;
+  }
+
+  const footerRight = myBet
+    ? `<div style="display:flex;gap:8px;align-items:center">${canClose?`<button class="close-wager-btn" onclick="openCloseModal('${w.id}')">Close wager</button>`:""}${canVoid?`<button class="void-btn" onclick="voidWager('${w.id}')">Void</button>`:""}<button class="joined-btn">Joined</button></div>`
+    : `<div style="display:flex;gap:8px;align-items:center">${canClose?`<button class="close-wager-btn" onclick="openCloseModal('${w.id}')">Close wager</button>`:""}${canVoid?`<button class="void-btn" onclick="voidWager('${w.id}')">Void</button>`:""}<button class="join-btn" onclick="joinWager('${w.id}')">Join wager</button></div>`;
+
+  return `<div class="wager-card" id="card-${w.id}">
+    <div class="wager-header"><div class="wager-title">${w.title}</div><div class="amt-pill">$${w.amount}/bet</div></div>
+    ${w.description?`<div class="wager-desc">${w.description}</div>`:""}
+    <div class="blind-box"><div class="blind-txt">Results sealed until closed</div><div class="blind-stats"><div class="blind-stat"><div class="blind-stat-num">${totalBets}</div><div class="blind-stat-lbl">bets in</div></div><div class="blind-stat"><div class="blind-stat-num">$${totalPot}</div><div class="blind-stat-lbl">total pot</div></div></div></div>
+    ${pickSection}
+    <div class="wager-footer"><div class="wager-footer-left">Created by ${w.createdBy} · ${createdDate}</div>${footerRight}</div>
+  </div>`;
+}
+
+// CLOSED TAB
+function renderClosedTab(wagers) {
+  const el = document.getElementById("tab-content-closed");
+  const isAdmin = ADMINS.includes(currentUser);
+  let html = "";
+  if (!wagers.length) {
+    html = `<div class="empty-state"><div class="empty-icon">🏁</div><div class="empty-title">No closed wagers yet</div><div class="empty-sub">Closed bets will appear here</div></div>`;
+  } else {
+    wagers.forEach(w => { html += renderClosedCard(w, isAdmin); });
+  }
+  el.innerHTML = html;
+}
+
+function renderClosedCard(w, isAdmin) {
+  const isTie = w.winningOutcome === "__tie__";
+  const totalBets = w.bets.length;
+  const amount = parseFloat(w.amount);
+  const totalPot = totalBets * amount;
+  const closedDate = new Date(w.closedAt).toLocaleDateString("en-US",{month:"short",day:"numeric"});
+  const myBet = w.bets.find(b => b.name === currentUser);
+
+  let payoutHtml = "";
+  if (isTie) {
+    payoutHtml = `<div class="payout-row"><span>Result</span><span>Tie — everyone gets their money back</span></div>`;
+    if (myBet) payoutHtml += `<div class="payout-row"><span>You</span><span class="payout-you">Get $${amount.toFixed(2)} back</span></div>`;
+  } else {
+    const winners = w.bets.filter(b => b.outcome === w.winningOutcome);
+    const losers = w.bets.filter(b => b.outcome !== w.winningOutcome);
+    const loserPot = losers.length * amount;
+    const profitEach = winners.length > 0 ? loserPot / winners.length : 0;
+    const totalEach = amount + profitEach;
+    payoutHtml = `<div class="payout-row"><span>Losing pot</span><span>$${loserPot.toFixed(2)} (${losers.length} × $${amount.toFixed(2)})</span></div>
+      <div class="payout-row"><span>Winners</span><span>${winners.map(b=>b.name).join(", ")||"none"}</span></div>
+      <div class="payout-row"><span>Each winner gets</span><span class="payout-win">$${amount.toFixed(2)} back + $${profitEach.toFixed(2)} profit = $${totalEach.toFixed(2)}</span></div>`;
+    if (myBet) {
+      if (myBet.outcome === w.winningOutcome) {
+        const owedBy = losers.map(b=>b.name);
+        payoutHtml += `<div class="payout-row"><span>You won</span><span class="payout-you">${owedBy.length?owedBy.join(", ")+" owe you $"+totalEach.toFixed(2):"No losers — you get your $"+amount.toFixed(2)+" back"}</span></div>`;
+      } else {
+        const oweWho = winners.map(b=>b.name);
+        payoutHtml += `<div class="payout-row"><span>You lost</span><span class="payout-you">${oweWho.length?"Pay "+oweWho.join(", ")+" $"+totalEach.toFixed(2)+" each":"Everyone lost — get your $"+amount.toFixed(2)+" back"}</span></div>`;
+      }
+    }
+  }
+
+  const maxBets = Math.max(...w.outcomes.map(o => w.bets.filter(b=>b.outcome===o).length), 1);
+  const distHtml = w.outcomes.map(o => {
+    const count = w.bets.filter(b=>b.outcome===o).length;
+    const pct = Math.round((count/Math.max(totalBets,1))*100);
+    const isWinner = !isTie && o === w.winningOutcome;
+    const changers = w.bets.filter(b=>b.outcome===o && b.changedCount>0);
+    const changedNote = changers.length ? `<span class="dist-changed">(${changers.map(b=>`${b.name} changed ${b.changedCount}x`).join(", ")})</span>` : "";
+    return `<div class="dist-row"><div class="dist-label">${o}</div><div class="dist-bar-wrap"><div class="dist-bar ${isWinner?"winning":""}" style="width:${pct}%"></div></div><div class="dist-count">${count} bet${count!==1?"s":""}${changedNote}</div></div>`;
+  }).join("");
+
+  const statusPill = isTie ? `<div class="tie-pill">Tie</div>` : `<div class="winner-pill">${w.winningOutcome} won</div>`;
+  const paidOutBtn = isAdmin ? `<button class="paidout-btn" onclick="markPaidOut('${w.id}')">Mark as paid out</button>` : "";
+
+  return `<div class="wager-card closed-card">
+    <div class="wager-header"><div class="wager-title">${w.title}</div>${statusPill}</div>
+    <div class="payout-box">
+      <div class="payout-lbl">Payout breakdown</div>
+      ${payoutHtml}
+      <div class="dist-section"><div class="dist-title">How everyone voted</div>${distHtml}</div>
+    </div>
+    <div class="wager-footer"><div class="stamp">Closed by ${w.closedBy} · ${closedDate}</div>${paidOutBtn}</div>
+  </div>`;
+}
+
+// PAIDOUT TAB
+function renderPaidoutTab(paidout, voided) {
+  const el = document.getElementById("tab-content-paidout");
+  let html = "";
+  if (!paidout.length && !voided.length) {
+    html = `<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-title">Nothing here yet</div><div class="empty-sub">Settled and voided wagers will appear here</div></div>`;
+  } else {
+    if (paidout.length) {
+      html += `<div class="section-lbl" style="margin-bottom:1rem">${paidout.length} settled wager${paidout.length!==1?"s":""}</div>`;
+      paidout.forEach(w => { html += renderPaidoutCard(w); });
+    }
+    if (voided.length) {
+      html += `<div class="section-lbl" style="margin:1.5rem 0 1rem">Voided wagers</div>`;
+      voided.forEach(w => { html += renderVoidCard(w); });
+    }
+  }
+  el.innerHTML = html;
+}
+
+function renderPaidoutCard(w) {
+  const isTie = w.winningOutcome === "__tie__";
+  const totalPot = (w.bets.length * parseFloat(w.amount)).toFixed(2);
+  const paidDate = new Date(w.paidOutAt).toLocaleDateString("en-US",{month:"short",day:"numeric"});
+  const closedDate = new Date(w.closedAt).toLocaleDateString("en-US",{month:"short",day:"numeric"});
+  return `<div class="wager-card paidout-card">
+    <div class="wager-header"><div class="wager-title" style="font-size:14px">${w.title}</div><div class="void-pill" style="background:#EAF3DE;color:#27500A;border-color:#C0DD97">Paid out</div></div>
+    <div class="wager-meta">Closed ${closedDate} · Paid out ${paidDate} · Settled by ${w.paidOutBy}</div>
+    <div class="paidout-summary">
+      <div class="paidout-stat"><div class="ps-stat-val">${isTie?"Tie":w.winningOutcome+" won"}</div><div class="ps-stat-lbl">outcome</div></div>
+      <div class="paidout-stat"><div class="ps-stat-val">$${totalPot}</div><div class="ps-stat-lbl">total pot</div></div>
+      <div class="paidout-stat"><div class="ps-stat-val">${w.bets.length}</div><div class="ps-stat-lbl">participants</div></div>
+    </div>
+  </div>`;
+}
+
+function renderVoidCard(w) {
+  const voidDate = new Date(w.voidedAt).toLocaleDateString("en-US",{month:"short",day:"numeric"});
+  return `<div class="wager-card void-card">
+    <div class="wager-header"><div class="wager-title" style="font-size:14px">${w.title}</div><div class="void-pill">Void</div></div>
+    <div class="wager-meta">Voided by ${w.voidedBy} · ${voidDate}</div>
+  </div>`;
+}
+
+// CREATE WAGER
+function openCreateModal() {
+  creatorOutcomes = [];
+  creatorPick = null;
+  document.getElementById("wagerTitle").value = "";
+  document.getElementById("wagerDesc").value = "";
+  document.getElementById("wagerAmount").value = "";
+  document.getElementById("outcomesError").classList.add("hidden");
+  document.getElementById("pickError").classList.add("hidden");
+  renderOutcomePills();
+  document.getElementById("addOutcomeInput").value = "";
+  document.getElementById("createModal").classList.remove("hidden");
+  document.getElementById("addOutcomeInput").onkeydown = function(e){
+    if(e.key==="Enter"){e.preventDefault();addOutcome();}
+  };
+}
+
+function renderOutcomePills() {
+  const row = document.getElementById("outcomesPillRow");
+  const pickRow = document.getElementById("yourPickRow");
+  row.innerHTML = creatorOutcomes.map((o,i)=>`<div class="pick-pill" onclick="removeOutcome(${i})" title="Click to remove">${o} ×</div>`).join("");
+  pickRow.innerHTML = creatorOutcomes.map(o=>`<div class="pick-pill ${creatorPick===o?"on":""}" onclick="selectCreatorPick('${o.replace(/'/g,"\\'")}',this)">${o}</div>`).join("");
+}
+
+function addOutcome() {
+  const inp = document.getElementById("addOutcomeInput");
+  const val = inp.value.trim();
+  if (!val || creatorOutcomes.includes(val) || creatorOutcomes.length >= 10) return;
+  creatorOutcomes.push(val);
+  inp.value = "";
+  renderOutcomePills();
+}
+
+function removeOutcome(i) {
+  const removed = creatorOutcomes[i];
+  creatorOutcomes.splice(i,1);
+  if (creatorPick === removed) creatorPick = null;
+  renderOutcomePills();
+}
+
+function selectCreatorPick(o) {
+  creatorPick = o;
+  renderOutcomePills();
+}
+
+async function submitCreateWager() {
+  const title = document.getElementById("wagerTitle").value.trim();
+  const desc = document.getElementById("wagerDesc").value.trim();
+  const amount = document.getElementById("wagerAmount").value.trim();
+  let valid = true;
+  if (creatorOutcomes.length < 2) { document.getElementById("outcomesError").classList.remove("hidden"); valid=false; }
+  else document.getElementById("outcomesError").classList.add("hidden");
+  if (!creatorPick) { document.getElementById("pickError").classList.remove("hidden"); valid=false; }
+  else document.getElementById("pickError").classList.add("hidden");
+  if (!title || !amount || !valid) return;
+  const btn = document.querySelector("#createModal .submit-btn");
+  btn.disabled = true; btn.textContent = "Posting...";
+  await postAction("createWager",{ title, description:desc, amount:parseFloat(amount), outcomes:creatorOutcomes, createdBy:currentUser, creatorOutcome:creatorPick });
+  closeModal("createModal");
+  showToast("Wager posted!");
+  renderAll();
+}
+
+// JOIN WAGER
+function selectChip(wagerId, outcome, el) {
+  document.querySelectorAll(`#chips-${wagerId} .outcome-chip`).forEach(c=>c.classList.remove("selected"));
+  el.classList.add("selected");
+  el.dataset.selected = outcome;
+}
+
+async function joinWager(wagerId) {
+  const chips = document.querySelectorAll(`#chips-${wagerId} .outcome-chip.selected`);
+  if (!chips.length) return showToast("Pick an outcome first");
+  const outcome = chips[0].dataset.selected || chips[0].textContent;
+  await postAction("joinWager",{ wagerId, name:currentUser, outcome });
+  showToast("You're in!");
+  renderAll();
+}
+
+// CHANGE PICK
+function changePick(wagerId) {
+  const wager = appData.wagers.find(w=>w.id===wagerId);
+  if (!wager) return;
+  const card = document.getElementById("card-"+wagerId);
+  const pickBox = card.querySelector(".your-pick-box");
+  const newHtml = `<div class="outcomes-label">Change your pick</div><div class="outcomes-grid" id="chips-${wagerId}">${wager.outcomes.map(o=>`<div class="outcome-chip" onclick="selectChip('${wagerId}','${o.replace(/'/g,"\\'")}',this)">${o}</div>`).join("")}</div><button class="join-btn" style="margin-bottom:14px" onclick="joinWager('${wagerId}')">Update pick</button>`;
+  pickBox.outerHTML = newHtml;
+}
+
+// CLOSE WAGER
+function openCloseModal(wagerId) {
+  selectedWagerToClose = wagerId;
+  selectedCloseOutcome = null;
+  const wager = appData.wagers.find(w=>w.id===wagerId);
+  document.getElementById("closeWagerTitle").textContent = wager.title;
+  document.getElementById("tieCheckbox").checked = false;
+  const row = document.getElementById("closeOutcomeRow");
+  row.innerHTML = wager.outcomes.map(o=>`<div class="pick-pill" onclick="selectCloseOutcome('${o.replace(/'/g,"\\'")}',this)">${o}</div>`).join("");
+  document.getElementById("closeWagerModal").classList.remove("hidden");
+}
+
+function selectCloseOutcome(o, el) {
+  selectedCloseOutcome = o;
+  document.getElementById("tieCheckbox").checked = false;
+  document.querySelectorAll("#closeOutcomeRow .pick-pill").forEach(p=>p.classList.remove("on"));
+  el.classList.add("on");
+}
+
+function handleTieCheck() {
+  const checked = document.getElementById("tieCheckbox").checked;
+  if (checked) {
+    selectedCloseOutcome = "__tie__";
+    document.querySelectorAll("#closeOutcomeRow .pick-pill").forEach(p=>p.classList.remove("on"));
+  } else {
+    selectedCloseOutcome = null;
+  }
+}
+
+async function submitCloseWager() {
+  if (!selectedCloseOutcome) return showToast("Select a winning outcome or mark as tie");
+  const btn = document.querySelector("#closeWagerModal .submit-btn");
+  btn.disabled=true; btn.textContent="Closing...";
+  await postAction("closeWager",{ wagerId:selectedWagerToClose, winningOutcome:selectedCloseOutcome, closedBy:currentUser });
+  closeModal("closeWagerModal");
+  showToast("Wager closed!");
+  switchTab("closed");
+  renderAll();
+}
+
+// VOID
+async function voidWager(wagerId) {
+  if (!confirm("Are you sure you want to void this wager? This cannot be undone.")) return;
+  await postAction("voidWager",{ wagerId, voidedBy:currentUser });
+  showToast("Wager voided");
+  renderAll();
+}
+
+// MARK PAID OUT
+async function markPaidOut(wagerId) {
+  await postAction("payoutWager",{ wagerId, paidOutBy:currentUser });
+  showToast("Marked as paid out!");
+  switchTab("paidout");
+  renderAll();
+}
+
+// UTILS
+function closeModal(id) {
+  document.getElementById(id).classList.add("hidden");
+  const btn = document.querySelector(`#${id} .submit-btn`);
+  if(btn){btn.disabled=false;btn.textContent=id==="createModal"?"Post wager":"Confirm & close";}
+}
+
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),2500);
+}
+
+init();
+</script>
+</body>
+</html>
